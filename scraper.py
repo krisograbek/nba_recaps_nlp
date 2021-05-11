@@ -1,6 +1,7 @@
 import requests
 
 import datetime as dt
+from datetime import timedelta
 from bs4 import BeautifulSoup
 
 
@@ -57,10 +58,15 @@ def get_games_info(date, days):
     return games_info
 
 
-def get_site_text(date, days=1):
-    # if days > 7:
-    #     print("Too many days... Reducing to 7")
-    #     days = 7
+def get_site_text(date, days):
+    if not days:
+        days = 7
+    if not date:
+        yesterday = dt.date.today() - timedelta(days=1)
+        date = yesterday.strftime("%Y%m%d")
+    if days > 7:
+        print("Too many days... Reducing to 7")
+        days = 7
     url_base = "https://www.espn.com"
     articles = []
     games_info = get_games_info(date, days)
