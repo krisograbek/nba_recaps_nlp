@@ -1,8 +1,8 @@
 import os
 import argparse
-import pickle
 
 from scraper import get_site_text
+from helpers import store_articles, load_articles
 
 
 def parse_arguments():
@@ -14,22 +14,17 @@ def parse_arguments():
     return args
 
 
-def store_articles(articles):
-    with open('pickle_files/articles', 'ab') as f:
-        pickle.dump(articles, f)
-
-
-def load_articles():
-    with open('pickle_files/articles', 'rb') as f:
-        articles = pickle.load(f)
-    return articles
-
 def get_articles_from_www(args):
+    # store games info with the whole recap articles
     store_articles(get_site_text(args.date, args.days))
 
+    # load articles
     articles = load_articles()
-    print("from pickle", len(articles))
-    
+
+    # extract important info
+    # Here we come...
+
+
     # dbfile.close()
     # sentences = []
     # for article in articles:
@@ -41,9 +36,6 @@ def get_articles_from_www(args):
 def main():
     args = parse_arguments()
     get_articles_from_www(args)
-
-
-
 
 
 if __name__ == '__main__':
