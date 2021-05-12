@@ -1,7 +1,12 @@
 import argparse
 
 from scraper import get_site_text
-from helpers import store_articles, load_articles
+from extractor import extract_stats
+from helpers import (
+    store_pickle, 
+    load_pickle,
+    filter_out_upper
+)
 
 
 def parse_arguments():
@@ -13,18 +18,27 @@ def parse_arguments():
     return args
 
 
-def get_articles_from_www(args):
-    # store games info with the whole recap articles
-    store_articles(get_site_text(args.date, args.days))
-
-
 def main():
+    f_article = "articles"
+    f_extracted= "extracted"
     args = parse_arguments()
-    get_articles_from_www(args)
 
-    articles = load_articles()
+    # articles = get_site_text(args.date, args.days)
+    # store_pickle(articles, f_article)
+
+    articles = load_pickle(f_article)
+    extracted = []
     for art in articles:
+        sentences = []
+        starts = []
         print(art[0])
+        extract_stats(art[1], sentences, starts)
+        text = filter_out_upper(sentences)
+        extracted.append((art[0], text))
+
+    store_pickle(extracted, f_extracted)
+
+    # extracted = load_pickle(f_extracted)
 
 
 if __name__ == '__main__':
