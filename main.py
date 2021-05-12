@@ -1,4 +1,3 @@
-import os
 import argparse
 
 from scraper import get_site_text
@@ -18,24 +17,14 @@ def get_articles_from_www(args):
     # store games info with the whole recap articles
     store_articles(get_site_text(args.date, args.days))
 
-    # load articles
-    articles = load_articles()
-
-    # extract important info
-    # Here we come...
-
-
-    # dbfile.close()
-    # sentences = []
-    # for article in articles:
-    #     starts = []
-    #     print(" - " *20)
-    #     print(article[0])
-
 
 def main():
     args = parse_arguments()
     get_articles_from_www(args)
+
+    articles = load_articles()
+    for art in articles:
+        print(art[0])
 
 
 if __name__ == '__main__':

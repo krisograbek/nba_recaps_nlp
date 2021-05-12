@@ -2,7 +2,7 @@ import pickle
 
 
 def store_articles(articles):
-    with open('pickle_files/articles', 'ab') as f:
+    with open('pickle_files/articles', 'wb') as f:
         pickle.dump(articles, f)
 
 
