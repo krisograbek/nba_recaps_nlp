@@ -6,6 +6,19 @@ from bs4 import BeautifulSoup
 
 
 def get_games_info(date, days):
+    """ 
+    Parameters
+    ----------
+    date : str (format YYYYMMDD)
+        The most recent day (default is yesterday)
+    days: int, optional
+        The number of days back (default is 7)
+
+    Returns
+    -------
+        a list of tuples with a score, 
+        a url for each game, and game's date
+    """
     # convert to datetime
     games_date = dt.datetime.strptime(date, "%Y%m%d")
     games_info = []
@@ -42,25 +55,45 @@ def get_games_info(date, days):
         if table_container.get_text() == "No games scheduled":
             print("No games scheduled on this day")
             return games_info
-        # TODO: explain, why you're throwing the first one away
-        # first one is a header
+        # first one is a header, we don't want it
         rows = table_container.find_all("tr")[1:]
-        # We get the cell that we need
-        # TODO: Maybe go deeper when explaining
 
+        # each row contains a cell with the score
         for row in rows:
+            # get the cell with the score
             score_cell = row.find_all("td")[2]
             game_score = score_cell.get_text()
+            # score cell contains also the link to the game
+            # we need game's recap, this is why replace() is here
             game_url = score_cell.a['href'].replace("game", "recap", 1)
             print(game_url)
-            games_info.append((game_score, game_url))
+            games_info.append((game_score, game_url, game_dt))
 
     return games_info
 
 
 def get_site_text(date, days):
+    """ Scrapes NBA recap articles from ESPN 
+
+    Parameters
+    ----------
+    date : str (format YYYYMMDD)
+        The most recent day (default is yesterday)
+    days: int, optional
+        The number of days back (default is 7)
+
+    Returns
+    -------
+    list
+        a list of tuples with a game score and article's text 
+
+    Raises
+    ------
+    AttributeError
+        If the most recent day is in the future
+    """
     if not days:
-        days = 7
+        days = 1
     if not date:
         yesterday = dt.date.today() - timedelta(days=1)
         date = yesterday.strftime("%Y%m%d")
@@ -80,7 +113,7 @@ def get_site_text(date, days):
             art_div = soup.find("div", class_ = "article-body")
             paras = art_div.find_all("p")
             # get article text from paragraphs
-            articles.append((info[0], " ".join([p.get_text() for p in paras])))
+            articles.append((info[0], " ".join([p.get_text() for p in paras]), info[2]))
         # sometimes a game recap is not provided. 
         # In that case atr_div is a NoneType and has no find_all() attribute
         except AttributeError as e:
