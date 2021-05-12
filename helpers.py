@@ -8,6 +8,8 @@ nlp = spacy.load("en_core_web_sm")
 
 def store_pickle(articles, fname):
     fdir = "pickle_files"
+    if not fname.endswith(".pickle"):
+        fname += ".pickle"
     fpath = os.path.join(fdir, fname)
     with open(fpath, 'wb') as f:
         pickle.dump(articles, f)
@@ -15,10 +17,103 @@ def store_pickle(articles, fname):
 
 def load_pickle(fname):
     fdir = "pickle_files"
+    if not fname.endswith(".pickle"):
+        fname += ".pickle"
     fpath = os.path.join(fdir, fname)
     with open(fpath, 'rb') as f:
         articles = pickle.load(f)
     return articles
+
+def get_children_by_type(token, types):
+    return [word for word in token.children if word.dep_ in types]
+
+def get_children_by_ent(token, ents):
+    return [word for word in token.children if word.ent_type_ in ents]
+
+def get_subj_from_verb(verb):
+    return [word for word in verb.lefts if word.dep_ == "nsubj"]
+
+def get_subj_from_dobj(token):
+    # direct parent of dobj is always a verb
+    verb = token.head
+    subjects = get_subj_from_verb(verb)
+    subj = ""
+    # When there is no subject, the verb is probably a conjunction
+    # for another verb
+    if len(subjects) == 0:
+        # TODO: What do we do here?
+        if verb.dep_ in ["ccomp", "conj"]:
+            subjects = get_subj_from_verb(verb)
+            if len(subjects) > 0:
+                subj = subjects[0]
+            return subj
+    else:
+        if verb.dep_ == "relcl":
+            subj = verb.head
+        else:
+            subj = subjects[0]
+    return subj
+
+def get_root(token):
+    root = list(token.ancestors)[-1]
+    return root
+
+# TODO: This function can be more DRY
+def get_subj_text(verb):
+    """
+        parameters: 
+            verb - a spacy token
+
+        returns:
+            text - a word representing the wanted subject
+    """
+    subj = None
+    text = ""
+
+    # if the verb is not of type VBD or VBN, 
+    # there is no immediate dependant of type subject.
+    # Instead, we try to find subject in the immediate head
+    if verb.tag_ not in ["VBD", "VBN"]:
+        verb = verb.head
+    
+    # if our verb's dep_ == "relcl" the subject will be immediate verb
+    if verb.dep_ == "relcl":
+        subj = verb.head
+        text = subj.text
+        return text
+
+    try:
+        subj = [word for word in verb.lefts if word.dep_ in ["nsubj", "nsubjpass"]][0]
+        text = subj.text
+    except IndexError:
+        pass
+        # print("Subject is not an immediate child of the verb")
+    
+    return text
+
+
+def get_prep_pobj_text(preps):
+    info = ""
+    if len(preps) == 0:
+        return info
+    for prep in preps:
+        try:
+            pobj = list(prep.rights)[0]
+            info += prep.text + " " + pobj.text + " "
+        except IndexError as e:
+            print("Somehow this prep doesn't have any child", str(e))
+
+    return info
+
+def get_pobjs_text(token, verb):
+    # prep childs for token
+    token_preps = [child for child in token.rights if child.dep_ == "prep"]
+    # prep childs for parent
+    verb_preps = [child for child in verb.rights if (child.dep_ == "prep") and (child.text in ["since", "at", "to", "in", "of", "without"]) and (child != token.head)]
+    # all preps
+    preps = token_preps + verb_preps
+
+    return get_prep_pobj_text(preps)
 
 def filter_out_upper(text):
     if isinstance(text, list):
