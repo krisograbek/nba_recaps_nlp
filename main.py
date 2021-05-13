@@ -21,7 +21,7 @@ def parse_arguments():
 
 def main():
     f_article = "articles"
-    f_extracted= "extracted"
+    f_filtered= "filtered"
     f_final = "final"
     args = parse_arguments()
 
@@ -32,7 +32,7 @@ def main():
 
     # load scraped articles
     articles = load_pickle(f_article)
-    extracted = []
+    filtered = []
     for art in articles:
         starts = []
         print(art[0])
@@ -41,15 +41,21 @@ def main():
         # cleaning headers like TIP-INS
         records = filter_out_upper(records)
         streaks = filter_out_upper(streaks)
-        extracted.append((art[0], streaks, records))
-    # save extracted text to a pickle file
-    save_pickle(extracted, f_extracted)
+        filtered.append((art[0], streaks, records))
+    # save filtered text to a pickle file
+    save_pickle(filtered, f_filtered)
 
-    extracted = load_pickle(f_extracted)
+    filtered = load_pickle(f_filtered)
 
-    filtered = get_filtered_articles(extracted)
-
-
+    extracted = get_filtered_articles(filtered)
+    finals = []
+    for art in extracted:
+        final = dict()
+        final['score'] = art[0]
+        final['rec'] = art[2]
+        final['streaks'] = art[1]
+        # finals.append(final)
+        print(final)
 
 
 if __name__ == '__main__':

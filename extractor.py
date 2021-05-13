@@ -57,12 +57,13 @@ def get_records(text, starts):
 
 def get_filtered_articles(extracted):
     merge_noun_chunks()
-    streak_tokens = []
+    filtered = []
     for art in extracted:
-        print(art[0])
-        streak_tokens += get_streak_tokens(art[1])
-
-    return streak_tokens
+        # print(art[0])
+        streak_tokens = get_streak_tokens(art[1])
+        text = streak_extractions(streak_tokens)
+        filtered.append((art[0], text, art[2]))
+    return filtered
 
 
 def get_streak_tokens(sentences):
@@ -79,43 +80,45 @@ def get_streak_tokens(sentences):
     matches = matcher(doc)
 
     streak_tokens = [doc[start] for _, start, _ in matches]
-    streak_extractions(streak_tokens)
+
     return streak_tokens
 
 
 def streak_extractions(streak_tokens):
-    print("Total tokens: ", len(streak_tokens))
+    # print("Total tokens: ", len(streak_tokens))
+
+    filtered_sents = []
 
     dobjs = [token for token in streak_tokens if token.dep_ in ["dobj", "nsubj"]]
     pobjs = [token for token in streak_tokens if token.dep_ in ["pobj"]]
 
     for token in pobjs:
-        handle_obj(token, True)
+        sent = handle_obj(token, True)
+        if len(sent) > 0:
+            filtered_sents.append(sent)
 
     for token in dobjs:
-        handle_obj(token)
+        sent = handle_obj(token)
+        if len(sent) > 0:
+            filtered_sents.append(sent)
+    return filtered_sents
 
-    print(" -_ "*20)
 
 def handle_obj(token, is_pobj = False):
+    ret_text = ""
     verb = token.head
     if is_pobj == True:
         prep = token.head
         verb = prep.head
         # if prep's head is not a verb, a pattern gets too complicated
         if verb.pos_ != "VERB":
-            return False
-    # if current token is a subject, there is no need to run the whole code
-    if token.dep_ == "nsubj":
-        print_text = [token.text, verb.text]
-        print(*print_text)
-        return True
+            return ret_text
 
     # some sentences are complicated and they don't match with any pattern coverd here
     # In this case only the whole sentence will be shown
     if (verb.tag_ not in ["VBD", "VBN"]) and (verb.head.tag_ not in ["VBD", "VBN"]):
         # print(".........Pattern not covered")
-        return False
+        return ret_text
 
     # get the subject's text
     # Note: It may be an empty string
@@ -131,6 +134,11 @@ def handle_obj(token, is_pobj = False):
 
     # array to print the extracted sentence
     print_text = [subj_text, verb_text, token.text, right_info]
+
+    # when token is a subject, we handle it differently
+    if token.dep_ == "nsubj":
+        print_text = [token.text, verb_text, right_info]
+   
     if is_pobj == True:
         dobj_text = ""
         try:
@@ -139,6 +147,9 @@ def handle_obj(token, is_pobj = False):
         except IndexError:
             pass
         print_text = [subj_text, verb_text, dobj_text, prep.text, token.text, right_info]
-    print(*print_text)
+    for word in print_text:
+        if len(word) > 0:
+            ret_text += word + " "
+    # print(*print_text)
 
-    return True
+    return ret_text
