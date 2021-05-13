@@ -1,7 +1,7 @@
 import argparse
 
 from scraper import get_site_text
-from extractor import extract_sentences, get_filtered_articles
+from extractor import get_filtered_articles, get_streaks, get_records
 from helpers import (
     save_pickle, 
     load_pickle,
@@ -34,12 +34,14 @@ def main():
     articles = load_pickle(f_article)
     extracted = []
     for art in articles:
-        sentences = []
         starts = []
         print(art[0])
-        extract_sentences(art[1], sentences, starts)
-        text = filter_out_upper(sentences)
-        extracted.append((art[0], text))
+        records = get_records(art[1], starts)
+        streaks = get_streaks(art[1], starts)
+        # cleaning headers like TIP-INS
+        records = filter_out_upper(records)
+        streaks = filter_out_upper(streaks)
+        extracted.append((art[0], streaks, records))
     # save extracted text to a pickle file
     save_pickle(extracted, f_extracted)
 

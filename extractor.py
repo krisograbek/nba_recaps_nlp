@@ -11,22 +11,30 @@ from helpers import (
 nlp = spacy.load('en_core_web_sm')
 
 
-def get_streaks(text, sentences, starts):
+def merge_noun_chunks():
+    if "merge_noun_chunks" not in nlp.pipe_names:
+        nlp.add_pipe("merge_noun_chunks", last=True)
+    if "merge_noun_chunks" in nlp.disabled:
+        nlp.enable_pipe("merge_noun_chunks")
+
+
+def get_streaks(text, starts):
     doc = nlp(text)
-    counter = 0
+    sentences = []
     for token in doc:
         if token.lower_ in ["straight", "streak", "consecutive"]:
             if token.sent.start not in starts:
-                counter += 1
                 starts.append(token.sent.start)
                 sentences.append(token.sent)
 
-    print("Streaks. Found {} streak(s)".format(counter))
-    print(starts)
+    print("Streaks. Found {} streak(s)".format(len(sentences)))
+    return sentences
 
 
-def get_records(text, sentences, starts):
+def get_records(text, starts):
     doc = nlp(text)
+    starts.append(0)
+    sentences = [doc[0].sent]
     matcher = Matcher(nlp.vocab)
     pattern = [
             [
@@ -37,35 +45,25 @@ def get_records(text, sentences, starts):
     ]
     matcher.add("records", pattern)
     matches = matcher(doc)
-    sents = []
     for match_id, start, end in matches:
         if doc[start].sent.start not in starts:
-            sents.append(doc[start].sent.text)
             sentences.append(doc[start].sent)
             starts.append(doc[start].sent.start)
-        else:
-            print("Here's a sentence")
-            print(doc[start].sent)
-    print("Records. Found {} record(s)".format(len(sents)))
-    print(starts)
 
-
-def extract_sentences(text, sentences, starts):
-    get_records(text, sentences, starts)
-    get_streaks(text, sentences, starts)
+    print("Records. Found {} record(s)".format(len(sentences)))
+    # print(sentences)
+    return sentences
 
 
 def get_filtered_articles(extracted):
-    try:
-        nlp.add_pipe("merge_entities", after="ner")
-        nlp.add_pipe("merge_noun_chunks", last=True)
-    except ValueError:
-        print("Pipes already there")
+    merge_noun_chunks()
+    streak_tokens = []
     for art in extracted:
         print(art[0])
-        streak_tokens = get_streak_tokens(art[1])
-        for token in streak_tokens:
-            print(token.text)
+        streak_tokens += get_streak_tokens(art[1])
+
+    return streak_tokens
+
 
 def get_streak_tokens(sentences):
     doc = nlp(sentences)
@@ -91,19 +89,12 @@ def streak_extractions(streak_tokens):
     dobjs = [token for token in streak_tokens if token.dep_ in ["dobj", "nsubj"]]
     pobjs = [token for token in streak_tokens if token.dep_ in ["pobj"]]
 
-    p_counter = 0
-    d_counter = 0
-
     for token in pobjs:
-        if handle_obj(token, True) == True:
-            p_counter += 1
+        handle_obj(token, True)
 
-    print("Counter {}/{}".format(p_counter, len(pobjs)))
-    
     for token in dobjs:
-        if handle_obj(token) == True:
-            d_counter += 1
-    print("Counter {}/{}".format(d_counter, len(dobjs)))
+        handle_obj(token)
+
     print(" -_ "*20)
 
 def handle_obj(token, is_pobj = False):
