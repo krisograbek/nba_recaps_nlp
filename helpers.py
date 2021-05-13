@@ -1,10 +1,16 @@
 import os
 import pickle
 import spacy
+import json
 from spacy.matcher import Matcher
 
 nlp = spacy.load("en_core_web_sm")
 
+def dump_json(final_dict, fname):
+    fdir = "json_files"
+    fpath = os.path.join(fdir, fname)
+    with open(fpath, 'w') as fjson:
+        json.dump(final_dict, fjson)
 
 def save_pickle(articles, fname):
     fdir = "pickle_files"

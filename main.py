@@ -5,7 +5,8 @@ from extractor import get_filtered_articles, get_streaks, get_records
 from helpers import (
     save_pickle, 
     load_pickle,
-    filter_out_upper
+    filter_out_upper,
+    dump_json
 )
 
 
@@ -22,7 +23,7 @@ def parse_arguments():
 def main():
     f_article = "articles"
     f_filtered= "filtered"
-    f_final = "final"
+    f_final = "final.json"
     args = parse_arguments()
 
     # scrape end store NBA recaps
@@ -54,8 +55,9 @@ def main():
         final['score'] = art[0]
         final['rec'] = art[2]
         final['streaks'] = art[1]
-        # finals.append(final)
-        print(final)
+        finals.append(final)
+
+    dump_json(finals, f_final)
 
 
 if __name__ == '__main__':
