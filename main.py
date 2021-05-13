@@ -3,7 +3,7 @@ import argparse
 from scraper import get_site_text
 from extractor import extract_sentences, get_filtered_articles
 from helpers import (
-    store_pickle, 
+    save_pickle, 
     load_pickle,
     filter_out_upper
 )
@@ -28,7 +28,7 @@ def main():
     # scrape end store NBA recaps
     if args.scrape:
         articles = get_site_text(args.date, args.days)
-        store_pickle(articles, f_article)
+        save_pickle(articles, f_article)
 
     # load scraped articles
     articles = load_pickle(f_article)
@@ -41,7 +41,7 @@ def main():
         text = filter_out_upper(sentences)
         extracted.append((art[0], text))
     # save extracted text to a pickle file
-    store_pickle(extracted, f_extracted)
+    save_pickle(extracted, f_extracted)
 
     extracted = load_pickle(f_extracted)
 

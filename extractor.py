@@ -14,8 +14,6 @@ nlp = spacy.load('en_core_web_sm')
 def get_streaks(text, sentences, starts):
     doc = nlp(text)
     counter = 0
-    # starts = []
-    # print("Looking for the streaks")
     for token in doc:
         if token.lower_ in ["straight", "streak", "consecutive"]:
             if token.sent.start not in starts:
@@ -39,9 +37,7 @@ def get_records(text, sentences, starts):
     ]
     matcher.add("records", pattern)
     matches = matcher(doc)
-    # print(len(matches))
     sents = []
-    # starts = []
     for match_id, start, end in matches:
         if doc[start].sent.start not in starts:
             sents.append(doc[start].sent.text)
@@ -50,17 +46,13 @@ def get_records(text, sentences, starts):
         else:
             print("Here's a sentence")
             print(doc[start].sent)
-            # print(type(doc[start:end][0].sent.text[:-1]), "streaks")
-        # print(type(doc[start:end][0].sent.text))
     print("Records. Found {} record(s)".format(len(sents)))
-    # print(sents)
     print(starts)
-    # for sent in sents:
-    #     print(sent)
+
 
 def extract_sentences(text, sentences, starts):
-    get_streaks(text, sentences, starts)
     get_records(text, sentences, starts)
+    get_streaks(text, sentences, starts)
 
 
 def get_filtered_articles(extracted):
@@ -72,8 +64,8 @@ def get_filtered_articles(extracted):
     for art in extracted:
         print(art[0])
         streak_tokens = get_streak_tokens(art[1])
-        # for token in streak_tokens:
-        #     print(token.text)
+        for token in streak_tokens:
+            print(token.text)
 
 def get_streak_tokens(sentences):
     doc = nlp(sentences)
@@ -115,7 +107,6 @@ def streak_extractions(streak_tokens):
     print(" -_ "*20)
 
 def handle_obj(token, is_pobj = False):
-    # print(token.sent.text)
     verb = token.head
     if is_pobj == True:
         prep = token.head
@@ -146,8 +137,6 @@ def handle_obj(token, is_pobj = False):
 
     # add more info if there is a prep child for the token
     right_info = get_pobjs_text(token, verb)
-    # if len(right_info) > 0:
-    #     print("!!!!!!!", right_info)
 
     # array to print the extracted sentence
     print_text = [subj_text, verb_text, token.text, right_info]
@@ -156,10 +145,8 @@ def handle_obj(token, is_pobj = False):
         try:
             dobj = [child for child in verb.rights if child.dep_ == "dobj"][0]
             dobj_text = dobj.text
-            # print("*****", dobj_text)
         except IndexError:
             pass
-        # print(token.sent.text)
         print_text = [subj_text, verb_text, dobj_text, prep.text, token.text, right_info]
     print(*print_text)
 

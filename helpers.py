@@ -6,7 +6,7 @@ from spacy.matcher import Matcher
 nlp = spacy.load("en_core_web_sm")
 
 
-def store_pickle(articles, fname):
+def save_pickle(articles, fname):
     fdir = "pickle_files"
     if not fname.endswith(".pickle"):
         fname += ".pickle"
