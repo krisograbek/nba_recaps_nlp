@@ -86,7 +86,7 @@ We assume you have Python version > 3.5 installed on your computer
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/krispudzian/nba_recaps_nlp.git
+   git clone https://github.com/krisograbek/nba_recaps_nlp.git
    ```
 2. Install packages
    ```sh
@@ -135,13 +135,13 @@ We assume you have Python version > 3.5 installed on your computer
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See [License File](https://github.com/krispudzian/nba_recaps_nlp/LICENSE.md) for more information.
+Distributed under the MIT License. See [License File](https://github.com/krisograbek/nba_recaps_nlp/blob/main/LICENSE.md) for more information.
 
 
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [This repo](https://github.com/krispudzian/nba_recaps_nlp.git)
+Project Link: [This repo](https://github.com/krisograbek/nba_recaps_nlp.git)
 LinkedIn: [Profile](https://www.linkedin.com/in/kris-ograbek-nlp/)
 
 
