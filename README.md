@@ -40,7 +40,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
@@ -61,10 +60,8 @@ Here's a blank template to get started:
 
 ### Built With
 
-* []()
-* []()
-* []()
-
+* [spacy](https://spacy.io/)
+* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 
 
 <!-- GETTING STARTED -->
@@ -74,7 +71,7 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-It is required to have Python version > 3.5 installed on your computer to run this project
+We assume you have Python version > 3.5 installed on your computer
 
 ### Installation
 
@@ -90,22 +87,39 @@ It is required to have Python version > 3.5 installed on your computer to run th
    ```sh
    python -m spacy download en_core_web_sm
    ```
-   For more info about different language models check the [spacy documentation](https://spacy.io/usage)
+  See [spacy documentation](https://spacy.io/usage) for more info about different language models
 
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+By default, the program scrapes NBA recaps from ESPN's website from yesterday's games
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+1. Basic usage
+   ```sh
+   py main.py --scrape
+   ```
+
+In order to scrape games from many days add `--days` and a number (max 10 days)
+
+2. Customizing number of days
+   ```sh
+   py main.py --scrape --days <1-10>
+   ```
+
+In order to change the most recent day add `--date` and a date in `YYYYMMDD` format
+
+3. Customizing the most recent day
+   ```sh
+   py main.py --scrape --date <YYYYMMDD>
+   ```
 
 
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See [License File](https://github.com/krispudzian/nba_recaps_nlp/blob/readme/LICENSE.md) for more information.
+Distributed under the MIT License. See [License File](https://github.com/krispudzian/nba_recaps_nlp/LICENSE.md) for more information.
 
 
 <!-- CONTACT -->
@@ -115,12 +129,7 @@ Project Link: [This repo](https://github.com/krispudzian/nba_recaps_nlp.git)
 LinkedIn: [Profile](https://www.linkedin.com/in/kris-ograbek-nlp/)
 
 
-
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* Original Markdown template - [https://github.com/othneildrew/Best-README-Template/blob/master/BLANK_README.md#built-with](https://github.com/othneildrew/Best-README-Template/blob/master/BLANK_README.md#built-with)
-* []()
-* []()
-
-
+* This README file is bootstrapped from - [Template](https://github.com/othneildrew/Best-README-Template/blob/master/BLANK_README.md#built-with)
