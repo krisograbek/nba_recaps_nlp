@@ -21,10 +21,6 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Stargazers][stars-shield]][stars-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
@@ -109,14 +105,14 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
-
+Distributed under the MIT License. See [License File](https://github.com/krispudzian/nba_recaps_nlp/blob/readme/LICENSE.md) for more information.
 
 
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [https://github.com/krispudzian/nba_recaps_nlp.git](https://github.com/krispudzian/nba_recaps_nlp.git)
+Project Link: [This repo](https://github.com/krispudzian/nba_recaps_nlp.git)
+LinkedIn: [Profile](https://www.linkedin.com/in/kris-ograbek-nlp/)
 
 
 
