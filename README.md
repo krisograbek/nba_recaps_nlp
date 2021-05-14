@@ -51,11 +51,20 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+Game recaps are articles containing highlights of the game. 
+They provide a lot of interesting information. 
+However, they are long and reading everything for every game is very time consuming.
 
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `repo_name`, `twitter_handle`, `email`, `project_title`, `project_description`
+The purpose of this project was to extract most important information from NBA games' recaps.
+Most important information include any kind of records or streaks. 
+E.g. any kind of season/career best performances, or winning/losing streaks, or games missed due injuries.
+
+First step is scraping articles and getting their text along with scores.
+Then Information Extraction is performed on the articles' text. 
+They get filtered only to sentences containing any kind of records or streaks.
+Record sentences stay as they are. Streak sentences get even more limited.
+E.g. Sentence "Rudy Gobert added 15 points and 20 rebounds for the Jazz, who lost their second straight game." 
+-> "the Jazz lost their second straight game"
 
 
 ### Built With
@@ -90,30 +99,37 @@ We assume you have Python version > 3.5 installed on your computer
   See [spacy documentation](https://spacy.io/usage) for more info about different language models
 
 
-
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-By default, the program scrapes NBA recaps from ESPN's website from yesterday's games
+1. By default, the program scrapes NBA recaps from ESPN's website from yesterday's games
 
-1. Basic usage
+   Basic usage
    ```sh
    py main.py --scrape
    ```
 
-In order to scrape games from many days add `--days` and a number (max 10 days)
+2. In order to scrape games from many days add `--days` and a number (max 10 days)
 
-2. Customizing number of days
+   Customizing number of days
    ```sh
    py main.py --scrape --days <1-10>
    ```
 
-In order to change the most recent day add `--date` and a date in `YYYYMMDD` format
+3. `--date` argument is the most recent day, from which we want to get games. It has `YYYYMMDD` format.
 
-3. Customizing the most recent day
+   Customizing the most recent day
    ```sh
    py main.py --scrape --date <YYYYMMDD>
    ```
+
+4. Example
+
+   ```sh
+   py main.py --scrape --date 20210512 --days 4
+   ```
+   In this example, 12 May 2021 is the most previous day, and we want 4 days in total.
+   This means games from 9th, 10th, 11th and 12th May 2021 will be extracted.
 
 
 <!-- LICENSE -->
