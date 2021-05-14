@@ -21,6 +21,9 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
+[![Contributors][contributors-shield]][contributors-url]
+[![Stargazers][stars-shield]][stars-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 <!-- TABLE OF CONTENTS -->
@@ -75,11 +78,7 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+It is required to have Python version > 3.5 installed on your computer to run this project
 
 ### Installation
 
@@ -91,6 +90,11 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    pip install -r requirements.txt
    ```
+3. Install language model
+   ```sh
+   python -m spacy download en_core_web_sm
+   ```
+   For more info about different language models check the [spacy documentation](https://spacy.io/usage)
 
 
 
