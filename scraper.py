@@ -92,7 +92,7 @@ def get_site_text(date, days):
     AttributeError
         If the most recent day is in the future
     """
-    if not days:
+    if (not days) or (days < 1):
         days = 1
     if not date:
         yesterday = dt.date.today() - timedelta(days=1)

@@ -22,7 +22,6 @@
 -->
 
 
-
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary><h2 style="display: inline-block">Table of Contents</h2></summary>
@@ -41,7 +40,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
@@ -53,19 +51,26 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+Game recaps are articles containing highlights of the game. 
+They provide a lot of interesting information. 
+However, they are long and reading everything for every game is very time consuming.
 
-Here's a blank template to get started:
-**To avoid retyping too much info. Do a search and replace with your text editor for the following:**
-`github_username`, `repo_name`, `twitter_handle`, `email`, `project_title`, `project_description`
+The purpose of this project was to extract most important information from NBA games' recaps.
+Most important information include any kind of records or streaks. 
+E.g. any kind of season/career best performances, or winning/losing streaks, or games missed due injuries.
+
+First step is scraping articles and getting their text along with scores.
+Then Information Extraction is performed on the articles' text. 
+They get filtered only to sentences containing any kind of records or streaks.
+Record sentences stay as they are. Streak sentences get even more limited.
+E.g. Sentence "Rudy Gobert added 15 points and 20 rebounds for the Jazz, who lost their second straight game." 
+-> "the Jazz lost their second straight game"
 
 
 ### Built With
 
-* []()
-* []()
-* []()
-
+* [spacy](https://spacy.io/)
+* [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 
 
 <!-- GETTING STARTED -->
@@ -75,11 +80,7 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+We assume you have Python version > 3.5 installed on your computer
 
 ### Installation
 
@@ -91,36 +92,60 @@ This is an example of how to list things you need to use the software and how to
    ```sh
    pip install -r requirements.txt
    ```
-
+3. Install language model
+   ```sh
+   python -m spacy download en_core_web_sm
+   ```
+  See [spacy documentation](https://spacy.io/usage) for more info about different language models
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+1. By default, the program scrapes NBA recaps from ESPN's website from yesterday's games
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+   Basic usage
+   ```sh
+   py main.py --scrape
+   ```
+
+2. In order to scrape games from many days add `--days` and a number (max 10 days)
+
+   Customizing number of days
+   ```sh
+   py main.py --scrape --days <1-10>
+   ```
+
+3. `--date` argument is the most recent day, from which we want to get games. It has `YYYYMMDD` format.
+
+   Customizing the most recent day
+   ```sh
+   py main.py --scrape --date <YYYYMMDD>
+   ```
+
+4. Example
+
+   ```sh
+   py main.py --scrape --date 20210512 --days 4
+   ```
+   In this example, 12 May 2021 is the most previous day, and we want 4 days in total.
+   This means games from 9th, 10th, 11th and 12th May 2021 will be extracted.
 
 
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
-
+Distributed under the MIT License. See [License File](https://github.com/krispudzian/nba_recaps_nlp/LICENSE.md) for more information.
 
 
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [https://github.com/krispudzian/nba_recaps_nlp.git](https://github.com/krispudzian/nba_recaps_nlp.git)
-
+Project Link: [This repo](https://github.com/krispudzian/nba_recaps_nlp.git)
+LinkedIn: [Profile](https://www.linkedin.com/in/kris-ograbek-nlp/)
 
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* Original Markdown template - [https://github.com/othneildrew/Best-README-Template/blob/master/BLANK_README.md#built-with](https://github.com/othneildrew/Best-README-Template/blob/master/BLANK_README.md#built-with)
-* []()
-* []()
-
-
+* This README file is bootstrapped from - [Template](https://github.com/othneildrew/Best-README-Template/blob/master/BLANK_README.md#built-with)
