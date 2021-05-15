@@ -30,41 +30,7 @@ def load_pickle(fname):
         articles = pickle.load(f)
     return articles
 
-def get_children_by_type(token, types):
-    return [word for word in token.children if word.dep_ in types]
 
-def get_children_by_ent(token, ents):
-    return [word for word in token.children if word.ent_type_ in ents]
-
-def get_subj_from_verb(verb):
-    return [word for word in verb.lefts if word.dep_ == "nsubj"]
-
-def get_subj_from_dobj(token):
-    # direct parent of dobj is always a verb
-    verb = token.head
-    subjects = get_subj_from_verb(verb)
-    subj = ""
-    # When there is no subject, the verb is probably a conjunction
-    # for another verb
-    if len(subjects) == 0:
-        # TODO: What do we do here?
-        if verb.dep_ in ["ccomp", "conj"]:
-            subjects = get_subj_from_verb(verb)
-            if len(subjects) > 0:
-                subj = subjects[0]
-            return subj
-    else:
-        if verb.dep_ == "relcl":
-            subj = verb.head
-        else:
-            subj = subjects[0]
-    return subj
-
-def get_root(token):
-    root = list(token.ancestors)[-1]
-    return root
-
-# TODO: This function can be more DRY
 def get_subj_text(verb):
     """
         parameters: 
@@ -85,7 +51,10 @@ def get_subj_text(verb):
     # if our verb's dep_ == "relcl" the subject will be immediate verb
     if verb.dep_ == "relcl":
         subj = verb.head
-        text = subj.text
+        try:
+            text = subj.text
+        except AttributeError:
+            pass
         return text
 
     try:
@@ -93,7 +62,6 @@ def get_subj_text(verb):
         text = subj.text
     except IndexError:
         pass
-        # print("Subject is not an immediate child of the verb")
     
     return text
 
