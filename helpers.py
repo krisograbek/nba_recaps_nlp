@@ -35,11 +35,12 @@ def get_subj_text(verb):
     """
     Parameters
     ----------
-        verb : a spacy Token
+    verb : a spacy Token
 
     Returns
     -------
-        a string representing the text of the subject
+    text : str 
+        The text of the subject
 
     Raises
     ------
@@ -81,12 +82,12 @@ def get_prep_pobj_text(preps):
     """
     Parameters
     ----------
-        preps : a list of spacy Tokens
+    preps : a list of spacy Tokens
 
     Returns
     -------
-        a string representing the text of preps 
-        with its immediate children - objects (pobj)
+    info : str
+        The text from preps with its immediate children - objects (pobj)
 
     Raises
     ------
@@ -109,10 +110,10 @@ def get_pobjs_text(token, verb):
     """
     Parameters
     ----------
-        token : a spacy Token
-            its dep_ attribute either dobj or pobj
-        verb : a spacy Token
-            its pos_ attribute verb
+    token : a spacy Token
+        its dep_ attribute either dobj or pobj
+    verb : a spacy Token
+        its pos_ attribute verb
 
     Returns
     -------
@@ -132,12 +133,13 @@ def filter_out_upper(text):
     """
     Parameters
     ----------
-        text : str
-        Contains the complete article
+    text : str
+        The complete article
 
     Returns
     -------
-        a string representing the same articles but without
+    text : str
+        The same articles but without
         sentences that start with TIP-INS or a city name
         with punctuations e.g. SACRAMENTO, Calif. -- -
     """

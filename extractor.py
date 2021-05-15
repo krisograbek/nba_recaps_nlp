@@ -19,6 +19,21 @@ def merge_noun_chunks():
 
 
 def get_streaks(text, starts):
+    """
+    Parameters
+    ----------
+    text : str
+        The article text
+    starts : list
+        The list with indices of Tokens, that are
+        at the beginning of sentences cantaining
+        words "straight", "streak", or "consecutive"
+
+    Returns
+    -------
+    sentences : a list of spacy Spans
+        Sentences cantaining words "straight", "streak", or "consecutive"
+    """
     doc = nlp(text)
     sentences = []
     for token in doc:
@@ -32,6 +47,22 @@ def get_streaks(text, starts):
 
 
 def get_records(text, starts):
+    """
+    Parameters
+    ----------
+    text : str
+        The article text
+    starts : list
+        The list with indices of Tokens, that are
+        at the beginning of sentences cantaining
+        words "straight", "streak", or "consecutive"
+
+    Returns
+    -------
+    sentences : a list of spacy Spans
+        Sentences cantaining any kind of best or worst performance
+        e.g. season-high, franchise best, career-low
+    """
     doc = nlp(text)
     starts.append(0)
     sentences = [doc[0].sent]
@@ -55,18 +86,43 @@ def get_records(text, starts):
     return sentences
 
 
-def get_filtered_articles(extracted):
+def get_extracted_articles(filtered):
+    """
+    Parameters
+    ----------
+    filtered : str
+        The sentences from all the articles after
+        filtering with get_streaks()
+    
+    Returns
+    -------
+    extracted : list of tuples
+        Each tuple contains a score, text extracted
+        from sentences with streaks, and record sentences
+    """
     merge_noun_chunks()
-    filtered = []
-    for art in extracted:
-        # print(art[0])
+    extracted = []
+    for art in filtered:
         streak_tokens = get_streak_tokens(art[1])
         text = streak_extractions(streak_tokens)
-        filtered.append((art[0], text, art[2]))
-    return filtered
+        extracted.append((art[0], text, art[2]))
+    return extracted
 
 
 def get_streak_tokens(sentences):
+    """
+    Parameters
+    ----------
+    sentences : str
+        The sentences from all the articles after
+        filtering with get_streaks()
+    
+    Returns
+    -------
+    streak_tokens : list of spacy Tokens
+        Noun chunks containing one of words:
+        straight, consecutive, streak
+    """
     doc = nlp(sentences)
 
     matcher = Matcher(nlp.vocab)
@@ -85,7 +141,18 @@ def get_streak_tokens(sentences):
 
 
 def streak_extractions(streak_tokens):
-    # print("Total tokens: ", len(streak_tokens))
+    """
+    Parameters
+    ----------
+    streak_tokens : list of spacy Tokens
+        Noun chunks containing one of words:
+        straight, consecutive, streak
+    
+    Returns
+    -------
+    filtered_sents : list of str
+        Text extracted from sentences with streaks
+    """
 
     filtered_sents = []
 
@@ -105,6 +172,22 @@ def streak_extractions(streak_tokens):
 
 
 def handle_obj(token, is_pobj = False):
+    """ Applies Information Extraction task using spacy. 
+    It checks many conditions about sentences' dependency trees.
+    
+    Parameters
+    ----------
+    token : spacy Token
+        Noun chunk containing one of words:
+        straight, consecutive, streak
+    is_pobj : Boolean
+        A flag that is True if token.dep_ == "pobj"
+    
+    Returns
+    -------
+    ret_text : str
+        Text extracted from sentences with streaks
+    """
     ret_text = ""
     verb = token.head
     if is_pobj == True:
