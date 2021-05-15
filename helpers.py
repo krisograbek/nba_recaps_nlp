@@ -30,48 +30,26 @@ def load_pickle(fname):
         articles = pickle.load(f)
     return articles
 
-def get_children_by_type(token, types):
-    return [word for word in token.children if word.dep_ in types]
 
-def get_children_by_ent(token, ents):
-    return [word for word in token.children if word.ent_type_ in ents]
-
-def get_subj_from_verb(verb):
-    return [word for word in verb.lefts if word.dep_ == "nsubj"]
-
-def get_subj_from_dobj(token):
-    # direct parent of dobj is always a verb
-    verb = token.head
-    subjects = get_subj_from_verb(verb)
-    subj = ""
-    # When there is no subject, the verb is probably a conjunction
-    # for another verb
-    if len(subjects) == 0:
-        # TODO: What do we do here?
-        if verb.dep_ in ["ccomp", "conj"]:
-            subjects = get_subj_from_verb(verb)
-            if len(subjects) > 0:
-                subj = subjects[0]
-            return subj
-    else:
-        if verb.dep_ == "relcl":
-            subj = verb.head
-        else:
-            subj = subjects[0]
-    return subj
-
-def get_root(token):
-    root = list(token.ancestors)[-1]
-    return root
-
-# TODO: This function can be more DRY
 def get_subj_text(verb):
     """
-        parameters: 
-            verb - a spacy token
+    Parameters
+    ----------
+    verb : a spacy Token
 
-        returns:
-            text - a word representing the wanted subject
+    Returns
+    -------
+    text : str 
+        The text of the subject
+
+    Raises
+    ------
+    AttributeError
+        if the given verb is a relative clause and its head 
+        is not a subject (very unlikely)
+    IndexError
+        if the given verb or its direct parent don't have
+        any child subject
     """
     subj = None
     text = ""
@@ -85,7 +63,10 @@ def get_subj_text(verb):
     # if our verb's dep_ == "relcl" the subject will be immediate verb
     if verb.dep_ == "relcl":
         subj = verb.head
-        text = subj.text
+        try:
+            text = subj.text
+        except AttributeError:
+            pass
         return text
 
     try:
@@ -93,12 +74,26 @@ def get_subj_text(verb):
         text = subj.text
     except IndexError:
         pass
-        # print("Subject is not an immediate child of the verb")
     
     return text
 
 
 def get_prep_pobj_text(preps):
+    """
+    Parameters
+    ----------
+    preps : a list of spacy Tokens
+
+    Returns
+    -------
+    info : str
+        The text from preps with its immediate children - objects (pobj)
+
+    Raises
+    ------
+    IndexError
+        if any of given preps doesn't have any children
+    """
     info = ""
     if len(preps) == 0:
         return info
@@ -112,6 +107,19 @@ def get_prep_pobj_text(preps):
     return info
 
 def get_pobjs_text(token, verb):
+    """
+    Parameters
+    ----------
+    token : a spacy Token
+        its dep_ attribute either dobj or pobj
+    verb : a spacy Token
+        its pos_ attribute verb
+
+    Returns
+    -------
+        a string representing the text of preps 
+        with its immediate children - objects (pobj)
+    """
     # prep childs for token
     token_preps = [child for child in token.rights if child.dep_ == "prep"]
     # prep childs for parent
@@ -122,6 +130,19 @@ def get_pobjs_text(token, verb):
     return get_prep_pobj_text(preps)
 
 def filter_out_upper(text):
+    """
+    Parameters
+    ----------
+    text : str
+        The complete article
+
+    Returns
+    -------
+    text : str
+        The same articles but without
+        sentences that start with TIP-INS or a city name
+        with punctuations e.g. SACRAMENTO, Calif. -- -
+    """
     if isinstance(text, list):
         text = " ".join([sent.text for sent in text])
     doc = nlp(text)

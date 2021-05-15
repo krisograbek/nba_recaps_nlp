@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 
 def get_games_info(date, days):
-    """ 
+    """
     Parameters
     ----------
     date : str (format YYYYMMDD)
@@ -73,7 +73,7 @@ def get_games_info(date, days):
 
 
 def get_site_text(date, days):
-    """ Scrapes NBA recap articles from ESPN 
+    """ Scrapes NBA recap articles from ESPN
 
     Parameters
     ----------

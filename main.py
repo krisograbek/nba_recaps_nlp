@@ -1,7 +1,7 @@
 import argparse
 
 from scraper import get_site_text
-from extractor import get_filtered_articles, get_streaks, get_records
+from extractor import get_extracted_articles, get_streaks, get_records
 from helpers import (
     save_pickle, 
     load_pickle,
@@ -48,7 +48,7 @@ def main():
 
     filtered = load_pickle(f_filtered)
 
-    extracted = get_filtered_articles(filtered)
+    extracted = get_extracted_articles(filtered)
     finals = []
     for art in extracted:
         final = dict()
